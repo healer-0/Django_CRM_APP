@@ -1,0 +1,36 @@
+version: '3.8'
+
+
+services:
+  # Define the Django web service
+  web:
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+#    environment:
+#      - DEBUG=True
+#      - DJANGO_DB_ENGINE=django.db.backends.mysql
+#      - DJANGO_DB_HOST=db
+#      - DJANGO_DB_PORT=3306
+#      - DJANGO_DB_NAME=mydatabase
+#      - DJANGO_DB_USER=myuser
+#      - DJANGO_DB_PASSWORD=mypassword
+
+  # Define the MySQL database service
+  db:
+    image: mysql:latest
+    restart: always
+    environment:
+      - MYSQL_DATABASE=mydatabase
+      - MYSQL_PASSWORD=password
+      - MYSQL_ROOT_PASSWORD=password
+    ports:
+      - "3307:3306"
